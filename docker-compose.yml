@@ -1,0 +1,54 @@
+version: "3"
+
+volumes:
+  db-store:
+
+services:
+  nginx:
+    build: ./infra/docker/nginx
+    volumes:
+      - ./src:/src
+      - ./infra/docker/nginx/conf.d:/etc/nginx/conf.d
+    links:
+      - php-fpm
+    ports:
+      - 80:8080
+    working_dir: /src
+
+  php-fpm:
+    build: ./infra/docker/php
+    links:
+      - mysql
+      - redis
+    volumes:
+      - ./src:/src
+    working_dir: /src
+
+  mysql:
+    image: mysql
+    volumes:
+      - db-store:/var/lib/mysql
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sercret
+      MYSQL_DATABASE: mysql_sample
+      MYSQL_USER: phper
+      MYSQL_PASSWORD: sercret
+
+  redis:
+    image: redis:alpine
+
+  redis-commander:
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    links:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - 6081:8081
