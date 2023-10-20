@@ -4,32 +4,26 @@ volumes:
   db-store:
 
 services:
-  nginx:
-    build: ./infra/docker/nginx
-    volumes:
-      - ./src:/src
-      - ./infra/docker/nginx/conf.d:/etc/nginx/conf.d
-    links:
-      - php-fpm
+  web:
+    platform: linux/arm64
+    build:
+      context: .
+      dockerfile: ./infra/docker/httpd-php/Dockerfile
     ports:
-      - 80:8080
-    working_dir: /src
-
-  php-fpm:
-    build: ./infra/docker/php
+      - 8088:80
+    volumes:
+      - ./src:/var/www/html/src/
+      - ./infra/docker/httpd-php/php.ini:/usr/local/etc/php/php.ini
+    tty: true
     links:
       - mysql
-      - redis
-    volumes:
-      - ./src:/src
-    working_dir: /src
 
   mysql:
     image: mysql
     volumes:
       - db-store:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 3316:3306
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
