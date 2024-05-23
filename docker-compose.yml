@@ -10,7 +10,7 @@ services:
       context: .
       dockerfile: ./infra/docker/httpd-php/Dockerfile
     ports:
-      - 8088:80
+      - 80:80
     volumes:
       - ./src:/var/www/html/src/
       - ./infra/docker/httpd-php/php.ini:/usr/local/etc/php/php.ini
@@ -23,7 +23,7 @@ services:
     volumes:
       - db-store:/var/lib/mysql
     ports:
-      - 3316:3306
+      - 3306:3306
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:

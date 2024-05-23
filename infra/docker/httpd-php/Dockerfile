@@ -14,7 +14,7 @@ RUN curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.g
 RUN echo 'redis' >> /usr/src/php-available-exts
 RUN docker-php-ext-install redis
 
-COPY --from=composer:2.5.8 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
 
