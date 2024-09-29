@@ -44,3 +44,15 @@ services:
       - REDIS_PORT=6379
     ports:
       - 6081:8081
+
+  phpmyadmin:
+    image: phpmyadmin
+    depends_on:
+      - mysql
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=mysql
+      - PMA_USER=phper
+      - PMA_PASSWORD=sercret
+    ports:
+      - 33369:80
